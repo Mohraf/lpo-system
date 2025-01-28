@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  EMPLOYEE
+  APPROVER
+  ADMIN
+}
+
+model Company {
+  id      Int      @id @default(autoincrement())
+  name    String
+  sites   Site[]
+}
+
+model Site {
+  id        Int      @id @default(autoincrement())
+  name      String
+  company   Company  @relation(fields: [companyId], references: [id])
+  companyId Int
+  lpos      Lpo[]
+}
+
+model Lpo {
+  id               Int           @id @default(autoincrement())
+  site             Site          @relation(fields: [siteId], references: [id])
+  siteId           Int
+  date             DateTime
+  lpoNumber        String
+  prNumber         String
+  paymentTerms     String
+  deliveryTerms    String
+  supplyItems      SupplyItem[]
+  subTotal         Float
+  vatRate          Float
+  total            Float
+  createdBy        User          @relation(fields: [createdById], references: [id])
+  createdById      Int
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  firstApprover    User?         @relation("FirstApprover", fields: [firstApproverId], references: [id])
+  firstApproverId  Int?
+  secondApprover   User?         @relation("SecondApprover", fields: [secondApproverId], references: [id])
+  secondApproverId Int?
+  finalApprover    User?         @relation("FinalApprover", fields: [finalApproverId], references: [id])
+  finalApproverId  Int?
+  supplier         Supplier      @relation(fields: [supplierId], references: [id])
+  supplierId       Int
+}
+
+model Supplier {
+  id    Int     @id @default(autoincrement())
+  name  String
+  lpos  Lpo[]
+}
+
+model SupplyItem {
+  id       Int     @id @default(autoincrement())
+  name     String
+  quantity Float
+  unit     String
+  unitPrice Float
+  amount   Float
+  lpo      Lpo     @relation(fields: [lpoId], references: [id])
+  lpoId    Int
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  firstName      String
+  lastName       String
+  email          String   @unique
+  password       String
+  role           UserRole @default(EMPLOYEE)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
