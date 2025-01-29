@@ -1,47 +1,68 @@
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { getServerSession } from "next-auth";
 
-const prisma = new PrismaClient();
-
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
+      name: "Credentials",
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" }
       },
-      authorize: async (credentials) => {
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials?.email as string },
+          where: { email: credentials.email.toString() },
         });
 
-        if (!user || !(await compare(credentials?.password as string, user.password))) {
-          return null;
-        }
+        if (!user) return null;
 
-        return {
-          id: user.id.toString(),
-          name: `${user.firstName} ${user.lastName}`,
-          email: user.email,
-          role: user.role,
-        };
-      },
-    }),
+        const isValid = await compare(
+          credentials.password.toString(),
+          user.password
+        );
+
+        return isValid
+          ? { id: user.id.toString(), name: `${user.firstName} ${user.lastName}`, email: user.email, role: user.role }
+          : null;
+      }
+    })
   ],
+  session: {
+    strategy: "jwt", // Ensure database sessions are enabled
+  },
   callbacks: {
     jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
         token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
     session({ session, token }) {
-      session.user.role = token.role as string;
-      session.user.id = token.id as string;
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+      }
       return session;
-    },
+    }
   },
-});
+  pages: {
+    signIn: "/login",
+    error: "/login"
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development"
+};
+
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
+
+// ✅ Export a helper function to get session data in server components
+export const auth = () => getServerSession(authOptions);
