@@ -7,7 +7,7 @@ const navItems = [
   { name: "Dashboard", href: "/dashboard" },
   { name: "Posted LPOs", href: "/lpos" },
   { name: "First Approved LPOs", href: "/products" },
-  { name: "Second Approved LPOs", href: "/settings" },
+  { name: "Second Approved LPOs", href: "/secondapproved" },
   { name: "Final Approved LPOs", href: "/settings" }
 ];
 
