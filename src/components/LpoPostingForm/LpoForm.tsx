@@ -69,7 +69,6 @@ export function LpoForm({
   });
 
   const onSubmit = async (data: LpoFormValues) => {
-    console.log(data);
     try {
       const subTotal = data.supplyItems.reduce(
         (acc: number, item: any) => acc + item.quantity * item.unitPrice,
