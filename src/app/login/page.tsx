@@ -7,6 +7,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
   const success = searchParams.get("success");
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"; // Get callback from query or default
 
   return (
     <>
@@ -35,7 +36,7 @@ export default function LoginPage() {
               signIn("credentials", {
                 email: formData.get("email"),
                 password: formData.get("password"),
-                callbackUrl: "/dashboard",
+                callbackUrl, // Use dynamic callback URL
               });
             }}
             className="space-y-4"

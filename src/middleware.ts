@@ -7,6 +7,6 @@ export default withAuth({
 });
 
 export const config = { 
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/postedLpos/:path*"],
   skip: ["/api/auth/:path*"], // Allows NextAuth routes to work
 };

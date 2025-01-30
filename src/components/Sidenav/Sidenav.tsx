@@ -5,7 +5,7 @@ import { Menu, X } from "lucide-react";
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard" },
-  { name: "Posted LPOs", href: "/lpos" },
+  { name: "Posted LPOs", href: "/postedLpos" },
   { name: "First Approved LPOs", href: "/products" },
   { name: "Second Approved LPOs", href: "/secondapproved" },
   { name: "Final Approved LPOs", href: "/settings" }
