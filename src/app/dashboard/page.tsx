@@ -25,15 +25,7 @@ export default function Dashboard() {
           <LogoutButton />
         </div>
 
-        <div className="grid grid-cols-[25%,50%,25%]">
-          <div className="bg-white text-black py-10 border-r-2 flex justify-end px-4">
-            <ul className="text-right">
-              <li>POSTED LPOS</li>
-              <li>FIRST APPROVED LPOS</li>
-              <li>SECOND APPROVED LPOS</li>
-              <li>FINAL APPROVED LPOS</li>
-            </ul>
-          </div>
+        <div className="grid grid-cols-[70%,30%] h-[calc(100vh-5rem)]">
           <div className="bg-white text-black py-10 px-4">Hello</div>
           <div className="bg-white text-black py-10 border-l-2 flex justify-start px-4">Hello</div>
         </div>
