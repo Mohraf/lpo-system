@@ -18,7 +18,7 @@ export default function Dashboard() {
   return (
     <ClientSession>
       <div className="container mx-auto">
-        <div className="flex justify-between px-4 md:px-16 py-4 border-b-2">
+        <div className="flex justify-between px-4 md:px-4 py-4 border-b-2">
           <h1 className="text-lg font-bold mb-4">
             {session?.user ? `Welcome, ${session.user.name}!` : "Welcome!"}
           </h1>
