@@ -45,12 +45,12 @@ export function LpoForm({
   } = useForm<LpoFormValues>({
     resolver: zodResolver(lpoSchema),
     defaultValues: {
-      siteId: 1,
+      siteId: sites[0]?.id || 1,
       lpoNumber: "",
       prNumber: "",
       paymentTerms: "",
       deliveryTerms: "",
-      supplierId: 1,
+      supplierId: suppliers[0]?.id || 1,
       vatRate: 16,
       supplyItems: [
         {
@@ -68,41 +68,41 @@ export function LpoForm({
     name: "supplyItems",
   });
 
-  const onSubmit = async (data: LpoFormValues) => {
-    // Log submission data for debugging
-    console.log("Submitting data:", {
-      ...data,
-      subTotal: data.supplyItems.reduce((acc, item) => acc + item.quantity * item.unitPrice, 0),
-      total: data.supplyItems.reduce((acc, item) => acc + item.quantity * item.unitPrice, 0) * (1 + data.vatRate / 100),
-      date: new Date().toISOString(),
+  // components/LpoPostingForm/LpoForm.tsx
+const onSubmit = async (data: LpoFormValues) => {
+  try {
+    const response = await fetch("/api/lpos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...data,
+        siteId: Number(data.siteId),
+        supplierId: Number(data.supplierId),
+        vatRate: Number(data.vatRate),
+        supplyItems: data.supplyItems.map(item => ({
+          name: item.name,
+          quantity: Number(item.quantity),
+          unit: item.unit,
+          unitPrice: Number(item.unitPrice)
+        }))
+      }),
     });
-    try {
-      const subTotal = data.supplyItems.reduce(
-        (acc: number, item: any) => acc + item.quantity * item.unitPrice,
-        0
-      );
-      const total = subTotal * (1 + data.vatRate / 100);
 
-      const response = await fetch("/api/lpos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...data,
-          subTotal,
-          total,
-          date: new Date().toISOString(),
-        }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create LPO");
-
-      // Handle success
-    } catch (error) {
-      console.error("Submission error:", error);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to create LPO");
     }
-  };
+
+    // Handle success
+    const result = await response.json();
+    console.log("Success:", result);
+    window.location.reload();
+
+  } catch (error) {
+    console.error("Submission error:", error);
+    alert(error instanceof Error ? error.message : "Unknown error");
+  }
+};
 
   return (
     <form
@@ -221,7 +221,9 @@ export function LpoForm({
                   <div className="w-1/2">
                     <label className="text-gray-600 text-sm">Quantity</label>
                     <input
-                      {...register(`supplyItems.${index}.quantity`, { valueAsNumber: true })} // Add valueAsNumber
+                      {...register(`supplyItems.${index}.quantity`, {
+                        valueAsNumber: true,
+                      })} // Add valueAsNumber
                       defaultValue={item.quantity}
                       placeholder="Quantity"
                       type="number"
@@ -242,7 +244,9 @@ export function LpoForm({
                   <div className="w-1/2">
                     <label className="text-gray-600 text-sm">Unit Price</label>
                     <input
-                      {...register(`supplyItems.${index}.unitPrice`, { valueAsNumber: true })} // Add valueAsNumber
+                      {...register(`supplyItems.${index}.unitPrice`, {
+                        valueAsNumber: true,
+                      })} // Add valueAsNumber
                       defaultValue={item.unitPrice}
                       placeholder="Unit Price"
                       type="number"
@@ -269,7 +273,7 @@ export function LpoForm({
           <button
             type="button"
             onClick={() =>
-              append({ name: "", quantity: 0, unit: "", unitPrice: 0 })
+              append({ name: "", quantity: 1, unit: "", unitPrice: 0.01 })
             }
             className="text-blue-500 hover:text-blue-700 mt-4"
           >

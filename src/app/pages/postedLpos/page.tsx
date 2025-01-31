@@ -15,8 +15,20 @@ interface Lpo {
   createdAt: string;
 }
 
+interface Site {
+  id: number;
+  name: string;
+}
+
+interface Supplier {
+  id: number;
+  name: string; 
+}
+
 export default function PostedLposPage() {
   const [lpos, setLpos] = useState<Lpo[]>([]);
+  const [sites, setSites] = useState<Site[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
 
   useEffect(() => {
     fetch("/api/lpos")
@@ -27,27 +39,20 @@ export default function PostedLposPage() {
 
   if (!lpos) return <p>Loading...</p>;
 
-  const sites = [
-    {
-      id: 1,
-      name: "Makindu"
-    },
-    {
-      id: 2,
-      name: "Kithini Farm"
-    }
-  ]
+  useEffect(()=>{
+    fetch("/api/sites")
+      .then((res) => res.json())
+      .then(setSites)
+      .catch((err) => console.error("Failed to fetch Sites", err));
+  },[])
+
+  useEffect(()=>{
+    fetch("/api/suppliers")
+      .then((res) => res.json())
+      .then(setSuppliers)
+      .catch((err) => console.error("Failed to fetch Suppliers", err));
+  },[])
   
-  const suppliers = [
-    {
-      id: 1,
-      name: "Jamtech"
-    },
-    {
-      id: 2,
-      name: "Lishert"
-    }
-  ]
 
   return (
     <div className="container mx-auto p-6 h-screen">

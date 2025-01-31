@@ -30,10 +30,7 @@ const AddSupplierForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...data,
-          date: new Date().toISOString(),
-        }),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) throw new Error("Failed to create Supplier");
@@ -56,7 +53,7 @@ const AddSupplierForm = () => {
         {/* Name */}
         <div>
           <label htmlFor="name" className="block font-semibold">
-            LPO Number
+            Name
           </label>
           <input
             id="name"

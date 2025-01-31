@@ -49,7 +49,6 @@ model Lpo {
   id               Int           @id @default(autoincrement())
   site             Site          @relation(fields: [siteId], references: [id])
   siteId           Int
-  date             DateTime
   lpoNumber        String
   prNumber         String
   paymentTerms     String
@@ -81,10 +80,9 @@ model Supplier {
 model SupplyItem {
   id       Int     @id @default(autoincrement())
   name     String
-  quantity Float
+  quantity Int
   unit     String
   unitPrice Float
-  amount   Float
   lpo      Lpo     @relation(fields: [lpoId], references: [id])
   lpoId    Int
 }

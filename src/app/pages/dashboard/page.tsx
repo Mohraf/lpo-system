@@ -5,6 +5,7 @@ import ClientSession from "@/components/ClientSession";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { CompanyForm } from "@/components/Company/AddCompanyForm";
 import AddSiteForm from "@/components/Site/AddSiteForm";
+import AddSupplierForm from "@/components/Supplier/AddSupplierForm";
 
 const LogoutButton = () => (
   <button
@@ -15,7 +16,7 @@ const LogoutButton = () => (
   </button>
 );
 
-interface Company {
+export interface Company {
   id: number;
   name: string;
 }
@@ -40,6 +41,8 @@ export default function Dashboard() {
   if (!companies) return <p>Loading companies...</p>;
 
   if (!isClient) return null; // Ensures content is rendered only on client
+
+  console.log("Session:", session)
 
   return (
     <ClientSession>
@@ -78,6 +81,21 @@ export default function Dashboard() {
             <DialogContent className="sm:max-w-md">
               <DialogTitle>New Company Posting</DialogTitle>
               <AddSiteForm companies={companies} />
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <div className="p-4">
+          <h1 className="text-2xl font-bold">Suppliers</h1>
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                New Supplier
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogTitle>New Supplier Posting</DialogTitle>
+              <AddSupplierForm />
             </DialogContent>
           </Dialog>
         </div>
