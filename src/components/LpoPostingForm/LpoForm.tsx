@@ -55,9 +55,9 @@ export function LpoForm({
       supplyItems: [
         {
           name: "",
-          quantity: 0,
+          quantity: 1,
           unit: "",
-          unitPrice: 0,
+          unitPrice: 0.01,
         },
       ],
     },
@@ -69,6 +69,13 @@ export function LpoForm({
   });
 
   const onSubmit = async (data: LpoFormValues) => {
+    // Log submission data for debugging
+    console.log("Submitting data:", {
+      ...data,
+      subTotal: data.supplyItems.reduce((acc, item) => acc + item.quantity * item.unitPrice, 0),
+      total: data.supplyItems.reduce((acc, item) => acc + item.quantity * item.unitPrice, 0) * (1 + data.vatRate / 100),
+      date: new Date().toISOString(),
+    });
     try {
       const subTotal = data.supplyItems.reduce(
         (acc: number, item: any) => acc + item.quantity * item.unitPrice,
@@ -112,7 +119,7 @@ export function LpoForm({
           </label>
           <select
             id="siteId"
-            {...register("siteId")}
+            {...register("siteId", { valueAsNumber: true })} // Add valueAsNumber
             className="w-full border px-4 py-2 mt-1 rounded"
           >
             {sites.map((site) => (
@@ -196,7 +203,7 @@ export function LpoForm({
 
         {/* Supply Items */}
         <div>
-          <label className="block font-semibold">Supply Items</label>
+          <label className="block font-semibold mb-2">Supply Items</label>
           {fields.map((item, index) => (
             <div key={item.id} className="space-y-2">
               <div className="flex flex-col gap-4 border-gray-500 border-2 p-2 rounded-sm">
@@ -214,7 +221,7 @@ export function LpoForm({
                   <div className="w-1/2">
                     <label className="text-gray-600 text-sm">Quantity</label>
                     <input
-                      {...register(`supplyItems.${index}.quantity`)}
+                      {...register(`supplyItems.${index}.quantity`, { valueAsNumber: true })} // Add valueAsNumber
                       defaultValue={item.quantity}
                       placeholder="Quantity"
                       type="number"
@@ -235,7 +242,7 @@ export function LpoForm({
                   <div className="w-1/2">
                     <label className="text-gray-600 text-sm">Unit Price</label>
                     <input
-                      {...register(`supplyItems.${index}.unitPrice`)}
+                      {...register(`supplyItems.${index}.unitPrice`, { valueAsNumber: true })} // Add valueAsNumber
                       defaultValue={item.unitPrice}
                       placeholder="Unit Price"
                       type="number"
@@ -280,7 +287,7 @@ export function LpoForm({
           </label>
           <select
             id="supplierId"
-            {...register("supplierId")}
+            {...register("supplierId", { valueAsNumber: true })} // Add valueAsNumber
             className="w-full border px-4 py-2 mt-1 rounded"
           >
             {suppliers.map((supplier) => (

@@ -17,7 +17,6 @@ interface Lpo {
 
 export default function PostedLposPage() {
   const [lpos, setLpos] = useState<Lpo[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/lpos")
@@ -26,8 +25,32 @@ export default function PostedLposPage() {
       .catch((err) => console.error("Failed to fetch LPOs", err));
   }, []);
 
+  if (!lpos) return <p>Loading...</p>;
+
+  const sites = [
+    {
+      id: 1,
+      name: "Makindu"
+    },
+    {
+      id: 2,
+      name: "Kithini Farm"
+    }
+  ]
+  
+  const suppliers = [
+    {
+      id: 1,
+      name: "Jamtech"
+    },
+    {
+      id: 2,
+      name: "Lishert"
+    }
+  ]
+
   return (
-    <div className="p-6">
+    <div className="container mx-auto p-6 h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Posted LPOs</h1>
         <Dialog>
@@ -38,7 +61,7 @@ export default function PostedLposPage() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogTitle>New LPO Posting</DialogTitle>
-            <LpoForm sites={[]} suppliers={[]} />
+            <LpoForm sites={sites} suppliers={suppliers} />
           </DialogContent>
         </Dialog>
       </div>

@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
   experimental: {
     // serverComponentsExternalPackages: ["bcryptjs", "lodash", "jsonwebtoken"],
     serverComponentsExternalPackages: ["bcryptjs", "jose"],
@@ -16,19 +17,19 @@ const nextConfig: NextConfig = {
     return config;
   },
   // Configure headers to avoid automatic auth routes
-  // async headers() {
-  //   return [
-  //     {
-  //       source: "/(.*)",
-  //       headers: [
-  //         {
-  //           key: "x-middleware-ratelimit",
-  //           value: "none",
-  //         },
-  //       ],
-  //     },
-  //   ];
-  // },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "x-middleware-ratelimit",
+            value: "none",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

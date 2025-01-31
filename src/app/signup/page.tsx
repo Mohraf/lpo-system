@@ -13,7 +13,7 @@ const signupSchema = z.object({
 });
 
 export default function SignupPage() {
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
   const { 
     register, 

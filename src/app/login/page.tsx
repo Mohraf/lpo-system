@@ -1,31 +1,39 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
-  const error = searchParams.get("error");
-  const success = searchParams.get("success");
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"; // Get callback from query or default
+
+  const [params, setParams] = useState<{ error?: string; success?: string; callbackUrl?: string }>({});
+
+  useEffect(() => {
+    setParams({
+      error: searchParams.get("error") || undefined,
+      success: searchParams.get("success") || undefined,
+      callbackUrl: searchParams.get("callbackUrl") || "/pages/dashboard",
+    });
+  }, [searchParams]);
+
 
   return (
-    <>
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-96">
           <h1 className="text-2xl font-bold mb-6 text-center text-blue-500">
             Login
           </h1>
 
-          {error && (
+          {params.error && (
             <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-              {error === "CredentialsSignin" ? "Invalid credentials" : error}
+              {params.error === "CredentialsSignin" ? "Invalid credentials" : params.error}
             </div>
           )}
 
-          {success && (
+          {params.success && (
             <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">
-              {decodeURIComponent(success)}
+              {decodeURIComponent(params.success)}
             </div>
           )}
 
@@ -36,7 +44,7 @@ export default function LoginPage() {
               signIn("credentials", {
                 email: formData.get("email"),
                 password: formData.get("password"),
-                callbackUrl, // Use dynamic callback URL
+                callbackUrl: params.callbackUrl // Use dynamic callback URL
               });
             }}
             className="space-y-4"
@@ -76,6 +84,5 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-    </>
   );
 }

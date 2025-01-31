@@ -4,18 +4,18 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
 const navItems = [
-  { name: "Dashboard", href: "/dashboard" },
-  { name: "Posted LPOs", href: "/postedLpos" },
-  { name: "First Approved LPOs", href: "/products" },
-  { name: "Second Approved LPOs", href: "/secondapproved" },
-  { name: "Final Approved LPOs", href: "/settings" }
+  { name: "Dashboard", href: "/pages/dashboard" },
+  { name: "Posted LPOs", href: "/pages/postedLpos" },
+  { name: "First Approved LPOs", href: "/pages/firstapproved" },
+  { name: "Second Approved LPOs", href: "/pages/secondapproved" },
+  { name: "Final Approved LPOs", href: "/pages/finalapproved" }
 ];
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       {/* Mobile Menu Button */}
       <button
         className="p-2 md:hidden"
