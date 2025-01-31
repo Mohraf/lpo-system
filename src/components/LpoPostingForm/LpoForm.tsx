@@ -41,7 +41,6 @@ export function LpoForm({
     handleSubmit,
     formState: { errors },
     control,
-    setValue,
   } = useForm<LpoFormValues>({
     resolver: zodResolver(lpoSchema),
     defaultValues: {

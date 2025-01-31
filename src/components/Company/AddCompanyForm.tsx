@@ -14,7 +14,6 @@ export function CompanyForm() {
     register,
     handleSubmit,
     formState: { errors },
-    control,
   } = useForm<CompanyFormValues>({
     resolver: zodResolver(companySchema),
     defaultValues: {

@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import ClientSession from "@/components/ClientSession";
@@ -41,8 +41,6 @@ export default function Dashboard() {
   if (!companies) return <p>Loading companies...</p>;
 
   if (!isClient) return null; // Ensures content is rendered only on client
-
-  console.log("Session:", session)
 
   return (
     <ClientSession>

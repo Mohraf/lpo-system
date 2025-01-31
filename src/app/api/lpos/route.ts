@@ -81,7 +81,7 @@ export async function GET(req: Request) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    // Assuming you're fetching LPOs based on the logged-in user, adjust as needed
+    // fetching LPOs based on the logged-in user
     const lpos = await prisma.lpo.findMany({
       where: { createdById: parseInt(session.user.id) }, // Fetching LPOs created by the logged-in user
       include: {

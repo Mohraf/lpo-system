@@ -1,5 +1,5 @@
 "use client";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -17,7 +17,6 @@ const AddSiteForm = ({
         register,
         handleSubmit,
         formState: { errors },
-        control,
     } = useForm<SiteFormValues>({
         resolver: zodResolver(siteSchema),
         defaultValues: {

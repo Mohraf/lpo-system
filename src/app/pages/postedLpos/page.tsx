@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import { useState, useEffect } from "react";
 import { LpoForm } from "@/components/LpoPostingForm/LpoForm";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";

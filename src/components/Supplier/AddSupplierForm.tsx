@@ -1,5 +1,5 @@
 "use client";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -14,8 +14,6 @@ const AddSupplierForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-    control,
-    setValue,
   } = useForm<SupplierFormValues>({
     resolver: zodResolver(supplierSchema),
     defaultValues: {
