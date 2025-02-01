@@ -36,22 +36,22 @@ export default function PostedLposPage() {
       .catch((err) => console.error("Failed to fetch LPOs", err));
   }, []);
 
-  if (!lpos) return <p>Loading...</p>;
-
+  
   useEffect(()=>{
     fetch("/api/sites")
-      .then((res) => res.json())
-      .then(setSites)
-      .catch((err) => console.error("Failed to fetch Sites", err));
-  },[])
-
-  useEffect(()=>{
-    fetch("/api/suppliers")
-      .then((res) => res.json())
-      .then(setSuppliers)
-      .catch((err) => console.error("Failed to fetch Suppliers", err));
+    .then((res) => res.json())
+    .then(setSites)
+    .catch((err) => console.error("Failed to fetch Sites", err));
   },[])
   
+  useEffect(()=>{
+    fetch("/api/suppliers")
+    .then((res) => res.json())
+    .then(setSuppliers)
+    .catch((err) => console.error("Failed to fetch Suppliers", err));
+  },[])
+  
+  if (!lpos.length) return <p>Loading...</p>;
 
   return (
     <div className="container mx-auto p-6 h-screen">

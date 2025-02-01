@@ -24,7 +24,6 @@ export interface Company {
 export default function Dashboard() {
   const { data: session } = useSession();
   const [companies, setCompanies] = useState<Company[]>([]);
-
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -40,7 +39,10 @@ export default function Dashboard() {
 
   if (!companies) return <p>Loading companies...</p>;
 
-  if (!isClient) return null; // Ensures content is rendered only on client
+  // Ensure loading state is handled properly
+  if (!isClient) return <div>Loading...</div>; // Show loading state until client is ready
+
+  if (!session) return null; // Ensure user is authenticated
 
   return (
     <ClientSession>
@@ -63,7 +65,6 @@ export default function Dashboard() {
             <DialogContent className="sm:max-w-md">
               <DialogTitle>New Company Posting</DialogTitle>
               <CompanyForm />
-              <AddSiteForm companies={companies} />
             </DialogContent>
           </Dialog>
         </div>
@@ -77,7 +78,7 @@ export default function Dashboard() {
               </button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
-              <DialogTitle>New Company Posting</DialogTitle>
+              <DialogTitle>New Company Site Posting</DialogTitle>
               <AddSiteForm companies={companies} />
             </DialogContent>
           </Dialog>
