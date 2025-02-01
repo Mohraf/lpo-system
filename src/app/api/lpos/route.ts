@@ -55,7 +55,8 @@ export async function POST(req: Request) {
             unit: item.unit,
             unitPrice: Number(item.unitPrice)
           }))
-        }
+        },
+        remarks: rawData.remarks
       },
       include: { supplyItems: true }
     });

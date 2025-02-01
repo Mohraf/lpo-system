@@ -69,6 +69,7 @@ model Lpo {
   finalApproverId  Int?
   supplier         Supplier      @relation(fields: [supplierId], references: [id])
   supplierId       Int
+  remarks          String        @default("")
 }
 
 model Supplier {

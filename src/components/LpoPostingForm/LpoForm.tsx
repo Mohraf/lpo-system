@@ -25,6 +25,7 @@ const lpoSchema = z.object({
     .number()
     .min(0, "VAT rate cannot be negative")
     .max(100, "VAT rate cannot exceed 100%"),
+  remarks: z.string().min(1, "Remarks are required"),
 });
 
 type LpoFormValues = z.infer<typeof lpoSchema>; // Type inference from your schema
@@ -68,40 +69,39 @@ export function LpoForm({
   });
 
   // components/LpoPostingForm/LpoForm.tsx
-const onSubmit = async (data: LpoFormValues) => {
-  try {
-    const response = await fetch("/api/lpos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...data,
-        siteId: Number(data.siteId),
-        supplierId: Number(data.supplierId),
-        vatRate: Number(data.vatRate),
-        supplyItems: data.supplyItems.map(item => ({
-          name: item.name,
-          quantity: Number(item.quantity),
-          unit: item.unit,
-          unitPrice: Number(item.unitPrice)
-        }))
-      }),
-    });
+  const onSubmit = async (data: LpoFormValues) => {
+    try {
+      const response = await fetch("/api/lpos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...data,
+          siteId: Number(data.siteId),
+          supplierId: Number(data.supplierId),
+          vatRate: Number(data.vatRate),
+          supplyItems: data.supplyItems.map((item) => ({
+            name: item.name,
+            quantity: Number(item.quantity),
+            unit: item.unit,
+            unitPrice: Number(item.unitPrice),
+          })),
+        }),
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to create LPO");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create LPO");
+      }
+
+      // Handle success
+      const result = await response.json();
+      console.log("Success:", result);
+      window.location.reload();
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert(error instanceof Error ? error.message : "Unknown error");
     }
-
-    // Handle success
-    const result = await response.json();
-    console.log("Success:", result);
-    window.location.reload();
-
-  } catch (error) {
-    console.error("Submission error:", error);
-    alert(error instanceof Error ? error.message : "Unknown error");
-  }
-};
+  };
 
   return (
     <form
@@ -129,6 +129,27 @@ const onSubmit = async (data: LpoFormValues) => {
           </select>
           {errors.siteId && (
             <p className="text-red-500 text-sm">{errors.siteId.message}</p>
+          )}
+        </div>
+
+        {/* Supplier Selection */}
+        <div>
+          <label htmlFor="supplierId" className="block font-semibold">
+            Supplier
+          </label>
+          <select
+            id="supplierId"
+            {...register("supplierId", { valueAsNumber: true })} // Add valueAsNumber
+            className="w-full border px-4 py-2 mt-1 rounded"
+          >
+            {suppliers.map((supplier) => (
+              <option key={supplier.id} value={supplier.id}>
+                {supplier.name}
+              </option>
+            ))}
+          </select>
+          {errors.supplierId && (
+            <p className="text-red-500 text-sm">{errors.supplierId.message}</p>
           )}
         </div>
 
@@ -197,6 +218,37 @@ const onSubmit = async (data: LpoFormValues) => {
             <p className="text-red-500 text-sm">
               {errors.deliveryTerms.message}
             </p>
+          )}
+        </div>
+
+        {/* VAT Rate */}
+        <div>
+          <label htmlFor="vatRate" className="block font-semibold">
+            VAT Rate
+          </label>
+          <input
+            id="vatRate"
+            type="number"
+            {...register("vatRate", { valueAsNumber: true })} // Use valueAsNumber to ensure the value is treated as a number
+            className="w-full border px-4 py-2 mt-1 rounded"
+          />
+          {errors.vatRate && (
+            <p className="text-red-500 text-sm">{errors.vatRate.message}</p>
+          )}
+        </div>
+
+        {/* Remarks */}
+        <div>
+          <label htmlFor="remarks" className="block font-semibold">
+            Remarks
+          </label>
+          <textarea
+            id="remarks"
+            {...register("remarks")}
+            className="w-full border px-4 py-2 mt-1 rounded"
+          />
+          {errors.remarks && (
+            <p className="text-red-500 text-sm">{errors.remarks.message}</p>
           )}
         </div>
 
@@ -280,43 +332,6 @@ const onSubmit = async (data: LpoFormValues) => {
           </button>
           {errors.supplyItems && (
             <p className="text-red-500 text-sm">{errors.supplyItems.message}</p>
-          )}
-        </div>
-
-        {/* Supplier Selection */}
-        <div>
-          <label htmlFor="supplierId" className="block font-semibold">
-            Supplier
-          </label>
-          <select
-            id="supplierId"
-            {...register("supplierId", { valueAsNumber: true })} // Add valueAsNumber
-            className="w-full border px-4 py-2 mt-1 rounded"
-          >
-            {suppliers.map((supplier) => (
-              <option key={supplier.id} value={supplier.id}>
-                {supplier.name}
-              </option>
-            ))}
-          </select>
-          {errors.supplierId && (
-            <p className="text-red-500 text-sm">{errors.supplierId.message}</p>
-          )}
-        </div>
-
-        {/* VAT Rate */}
-        <div>
-          <label htmlFor="vatRate" className="block font-semibold">
-            VAT Rate
-          </label>
-          <input
-            id="vatRate"
-            type="number"
-            {...register("vatRate", { valueAsNumber: true })} // Use valueAsNumber to ensure the value is treated as a number
-            className="w-full border px-4 py-2 mt-1 rounded"
-          />
-          {errors.vatRate && (
-            <p className="text-red-500 text-sm">{errors.vatRate.message}</p>
           )}
         </div>
 
