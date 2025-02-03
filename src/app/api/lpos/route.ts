@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     // Validate required fields
     const requiredFields = [
       'siteId', 'supplierId', 'lpoNumber', 'prNumber',
-      'paymentTerms', 'deliveryTerms', 'vatRate', 'supplyItems'
+      'paymentTerms', 'deliveryTerms', 'vatRate', 'supplyItems', 'remarks'
     ];
     
     const missingFields = requiredFields.filter(field => !rawData[field]);

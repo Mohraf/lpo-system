@@ -2,6 +2,7 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useToast } from "@/hooks/use-toast";
 
 // Define the schema
 const supplyItemSchema = z.object({
@@ -52,6 +53,7 @@ export function LpoForm({
       deliveryTerms: "",
       supplierId: suppliers[0]?.id || 1,
       vatRate: 16,
+      remarks: "",
       supplyItems: [
         {
           name: "",
@@ -62,6 +64,8 @@ export function LpoForm({
       ],
     },
   });
+
+  const { toast } = useToast()
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -94,12 +98,18 @@ export function LpoForm({
       }
 
       // Handle success
-      const result = await response.json();
-      console.log("Success:", result);
+      toast({
+        title: "Success",
+        description: "LPO Posted"
+      })
       window.location.reload();
     } catch (error) {
-      console.error("Submission error:", error);
-      alert(error instanceof Error ? error.message : "Unknown error");
+      // alert(error instanceof Error ? error.message : "Unknown error");
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: error instanceof Error ? error.message : "Unknown error"
+      })
     }
   };
 

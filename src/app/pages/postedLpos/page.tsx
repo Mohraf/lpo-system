@@ -1,7 +1,13 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import { LpoForm } from "@/components/LpoPostingForm/LpoForm";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import LpoDetails from "@/components/Lpo/LpoDetails";
 
 interface Lpo {
   id: number;
@@ -21,13 +27,14 @@ interface Site {
 
 interface Supplier {
   id: number;
-  name: string; 
+  name: string;
 }
 
 export default function PostedLposPage() {
   const [lpos, setLpos] = useState<Lpo[]>([]);
   const [sites, setSites] = useState<Site[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [selectedLpo, setSelectedLpo] = useState<Lpo | null>(null);
 
   useEffect(() => {
     fetch("/api/lpos")
@@ -36,22 +43,21 @@ export default function PostedLposPage() {
       .catch((err) => console.error("Failed to fetch LPOs", err));
   }, []);
 
-  
-  useEffect(()=>{
+  useEffect(() => {
     fetch("/api/sites")
-    .then((res) => res.json())
-    .then(setSites)
-    .catch((err) => console.error("Failed to fetch Sites", err));
-  },[])
-  
-  useEffect(()=>{
+      .then((res) => res.json())
+      .then(setSites)
+      .catch((err) => console.error("Failed to fetch Sites", err));
+  }, []);
+
+  useEffect(() => {
     fetch("/api/suppliers")
-    .then((res) => res.json())
-    .then(setSuppliers)
-    .catch((err) => console.error("Failed to fetch Suppliers", err));
-  },[])
-  
-  if (!lpos.length) return <p>Loading...</p>;
+      .then((res) => res.json())
+      .then(setSuppliers)
+      .catch((err) => console.error("Failed to fetch Suppliers", err));
+  }, []);
+
+  if (!lpos) return <p>Loading...</p>;
 
   return (
     <div className="container mx-auto p-6 h-screen">
@@ -74,6 +80,7 @@ export default function PostedLposPage() {
         <table className="min-w-full border-collapse">
           <thead>
             <tr className="bg-gray-100 text-left">
+              <th className="p-3 border">Select</th>
               <th className="p-3 border">LPO Number</th>
               <th className="p-3 border">PR Number</th>
               <th className="p-3 border">Supplier</th>
@@ -85,19 +92,39 @@ export default function PostedLposPage() {
           </thead>
           <tbody>
             {lpos.map((lpo) => (
-              <tr key={lpo.id} className="border-t">
+              <tr
+                key={lpo.id}
+                className={`border-t cursor-pointer hover:bg-gray-100 ${
+                  selectedLpo?.id === lpo.id ? "bg-gray-200" : ""
+                }`}
+                onClick={() => setSelectedLpo(lpo)}
+              >
+                <td className="p-3 border text-center">
+                  <input
+                    type="radio"
+                    name="selectedLpo"
+                    checked={selectedLpo?.id === lpo.id}
+                    onChange={() => setSelectedLpo(lpo)}
+                  />
+                </td>
                 <td className="p-3 border">{lpo.lpoNumber}</td>
                 <td className="p-3 border">{lpo.prNumber}</td>
                 <td className="p-3 border">{lpo.supplier.name}</td>
                 <td className="p-3 border">{lpo.subTotal.toFixed(2)}</td>
                 <td className="p-3 border">{lpo.vatRate}%</td>
                 <td className="p-3 border">{lpo.total.toFixed(2)}</td>
-                <td className="p-3 border">{new Date(lpo.createdAt).toLocaleDateString()}</td>
+                <td className="p-3 border">
+                  {new Date(lpo.createdAt).toLocaleDateString()}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {selectedLpo && (
+        <LpoDetails lpo={selectedLpo} onClose={() => setSelectedLpo(null)} />
+      )}
     </div>
   );
 }
