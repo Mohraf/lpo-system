@@ -2,11 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  serverExternalPackages: ["bcryptjs", "jose"], // Updated key
   experimental: {
-    serverComponentsExternalPackages: ["bcryptjs", "jose"],
     middlewarePrefetch: "flexible",
   },
-  runtime: "nodejs",
   webpack: (config) => {
     config.externals = [...(config.externals || [])];
     return config;
