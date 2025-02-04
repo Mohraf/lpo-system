@@ -1,20 +1,13 @@
 "use client"
 import { useEffect, useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import ClientSession from "@/components/ClientSession";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { CompanyForm } from "@/components/Company/AddCompanyForm";
 import AddSiteForm from "@/components/Site/AddSiteForm";
 import AddSupplierForm from "@/components/Supplier/AddSupplierForm";
+import Header from "@/components/Header/Header";
 
-const LogoutButton = () => (
-  <button
-    onClick={() => signOut({ callbackUrl: "/login" })}
-    className="bg-red-500 text-white px-4 py-2 rounded"
-  >
-    Logout
-  </button>
-);
 
 export interface Company {
   id: number;
@@ -47,12 +40,7 @@ export default function Dashboard() {
   return (
     <ClientSession>
       <div className="container mx-auto h-screen">
-        <div className="flex justify-between px-4 md:px-4 py-4 border-b-2">
-          <h1 className="text-lg font-bold mb-4">
-            {session?.user ? `Welcome, ${session.user.name}!` : "Welcome!"}
-          </h1>
-          <LogoutButton />
-        </div>
+        <Header />
 
         <div className="p-4">
           <h1 className="text-2xl font-bold">Companies</h1>

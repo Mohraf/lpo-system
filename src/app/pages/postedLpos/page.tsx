@@ -8,6 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import LpoDetails from "@/components/Lpo/LpoDetails";
+import Header from "@/components/Header/Header";
 
 interface Lpo {
   id: number;
@@ -60,7 +61,10 @@ export default function PostedLposPage() {
   if (!lpos || !sites || !suppliers) return <p>Loading...</p>;
 
   return (
-    <div className="container mx-auto p-6 h-screen">
+    <div className="container mx-auto h-screen">
+      <Header />
+      <div className="p-6">
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Posted LPOs</h1>
         <Dialog>
@@ -126,6 +130,7 @@ export default function PostedLposPage() {
       {selectedLpo && (
         <LpoDetails lpo={selectedLpo} onClose={() => setSelectedLpo(null)} />
       )}
+      </div>
     </div>
   );
 }
