@@ -57,7 +57,7 @@ export default function PostedLposPage() {
       .catch((err) => console.error("Failed to fetch Suppliers", err));
   }, []);
 
-  if (!lpos) return <p>Loading...</p>;
+  if (!lpos || !sites || !suppliers) return <p>Loading...</p>;
 
   return (
     <div className="container mx-auto p-6 h-screen">
@@ -105,6 +105,7 @@ export default function PostedLposPage() {
                     name="selectedLpo"
                     checked={selectedLpo?.id === lpo.id}
                     onChange={() => setSelectedLpo(lpo)}
+                    className="text-slate-900 appearance-none cursor-pointer peer h-3 w-3 rounded-full border border-slate-500 checked:border-slate-900 transition-all"
                   />
                 </td>
                 <td className="p-3 border">{lpo.lpoNumber}</td>
