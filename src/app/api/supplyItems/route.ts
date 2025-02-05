@@ -8,7 +8,6 @@ export async function GET(req: NextRequest) {
 
     try {
         const lpoId = req.nextUrl.searchParams.get('lpoId');
-        // fetching LPOs based on the logged-in user
         if (lpoId) {
             const supplyItems = await prisma.supplyItem.findMany({
                 where: { lpoId: parseInt(lpoId) }, // Fetching SupplyItems by the selected LPO
