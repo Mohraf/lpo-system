@@ -3,12 +3,27 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { EditLpoForm } from "../LpoPostingForm/EditLpoForm";
+
+interface SupplyItem {
+  id: number;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  unit: string; // Ensure unit is included
+}
 
 interface Lpo {
   id: number;
   lpoNumber: string;
   prNumber: string;
-  supplier: { name: string };
+  supplier: { id: number; name: string };
   subTotal: number;
   vatRate: number;
   total: number;
@@ -16,6 +31,9 @@ interface Lpo {
   firstApproverId: number;
   secondApproverId: number;
   finalApproverId: number;
+  rejected: string;
+  site: { id: number; name: string };
+  supplyItems: SupplyItem[]; // Added supplyItems to the interface
 }
 
 interface LpoDetailsProps {
@@ -23,11 +41,14 @@ interface LpoDetailsProps {
   onClose: () => void;
 }
 
-interface SupplyItem {
+interface Site {
   id: number;
   name: string;
-  quantity: number;
-  unitPrice: number;
+}
+
+interface Supplier {
+  id: number;
+  name: string;
 }
 
 const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
@@ -37,8 +58,13 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
   const [isApproving, setIsApproving] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
   const { toast } = useToast();
+  const [sites, setSites] = useState<Site[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const userHasApprovalRights = session?.user?.role === "APPROVER" || "ADMIN";
+  const userHasApprovalRights =
+    session?.user?.role === "APPROVER" || session?.user?.role === "ADMIN";
 
   useEffect(() => {
     setIsLoading(true);
@@ -53,6 +79,19 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
         setIsLoading(false);
       });
   }, [lpo]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/sites")
+        .then((res) => res.json())
+        .then(setSites),
+      fetch("/api/suppliers")
+        .then((res) => res.json())
+        .then(setSuppliers),
+    ])
+      .catch((err) => console.error("Failed to fetch data", err))
+      .finally(() => setLoading(false));
+  }, [isEditing]);
 
   const handleApprove = async () => {
     setIsApproving(true);
@@ -100,7 +139,7 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
     } finally {
       setIsRejecting(false);
     }
-  }
+  };
 
   // Determine approval stage text dynamically
   const getApprovalButtonText = () => {
@@ -194,13 +233,37 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
                       {(item.quantity * item.unitPrice).toFixed(2)}
                     </td>
                   </tr>
-                ))}
+                ))} 
           </tbody>
         </table>
       </div>
 
+      {!userHasApprovalRights &&
+        lpo.rejected === "NO" &&
+        (lpo.firstApproverId == null ||
+          lpo.secondApproverId == null ||
+          lpo.finalApproverId == null) && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                Edit LPO
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogTitle>Edit LPO Posting</DialogTitle>
+              <EditLpoForm
+                sites={sites}
+                suppliers={suppliers}
+                supplyItems={supplyItems}
+                lpo={lpo} // Pass the LPO with supply items
+              />
+            </DialogContent>
+          </Dialog>
+        )}
+
       {/* Approval Button */}
       {userHasApprovalRights &&
+        lpo.rejected === "NO" &&
         (lpo.firstApproverId == null ||
           lpo.secondApproverId == null ||
           lpo.finalApproverId == null) && (

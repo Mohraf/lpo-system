@@ -10,11 +10,20 @@ import {
 import LpoDetails from "@/components/Lpo/LpoDetails";
 import Header from "@/components/Header/Header";
 
+
+interface SupplyItem {
+  id: number;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  unit: string; // Ensure unit is included
+}
+
 interface Lpo {
   id: number;
   lpoNumber: string;
   prNumber: string;
-  supplier: { name: string };
+  supplier: { id: number; name: string };
   subTotal: number;
   vatRate: number;
   total: number;
@@ -22,6 +31,9 @@ interface Lpo {
   firstApproverId: number;
   secondApproverId: number;
   finalApproverId: number;
+  rejected: string;
+  site: { id: number; name: string };
+  supplyItems: SupplyItem[];
 }
 
 interface Site {
@@ -50,6 +62,22 @@ export default function PostedLposPage() {
       .catch((err) => console.error("Failed to fetch data", err))
       .finally(() => setLoading(false));
   }, []);
+
+  const getLpoStatus = (lpo: Lpo) => {
+    if (lpo.rejected === "YES") {
+      return "Rejected";
+    } 
+    if (lpo.finalApproverId) {
+      return "Fully Approved";
+    } 
+    if (lpo.secondApproverId) {
+      return "Second Approved";
+    } 
+    if (lpo.firstApproverId) {
+      return "First Approved";
+    } 
+    return "Pending";
+  };
 
   return (
     <div className="container mx-auto h-screen">
@@ -83,6 +111,7 @@ export default function PostedLposPage() {
                 <th className="p-3 border">VAT</th>
                 <th className="p-3 border">Total</th>
                 <th className="p-3 border">Date</th>
+                <th className="p-3 border">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -125,6 +154,7 @@ export default function PostedLposPage() {
                     <td className="p-3 border">
                       {new Date(lpo.createdAt).toLocaleDateString()}
                     </td>
+                    <td className="p-3 border">{getLpoStatus(lpo)}</td>
                   </tr>
                 ))
               )}
