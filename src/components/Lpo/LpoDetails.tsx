@@ -35,6 +35,7 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
   const [supplyItems, setSupplyItems] = useState<SupplyItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isApproving, setIsApproving] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
   const { toast } = useToast();
 
   const userHasApprovalRights = session?.user?.role === "APPROVER" || "ADMIN";
@@ -76,6 +77,30 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
       setIsApproving(false);
     }
   };
+
+  const handleReject = async () => {
+    setIsRejecting(true);
+    try {
+      const response = await fetch(`/api/lpos/${lpo.id}/reject`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        toast({ description: "Reject failed", variant: "destructive" });
+      } else {
+        toast({ description: "LPO rejected successfully!" });
+        onClose(); // Optionally close after approval
+      }
+    } catch (error) {
+      console.error(error);
+      toast({ description: "Error Rejecting LPO", variant: "destructive" });
+    } finally {
+      setIsRejecting(false);
+    }
+  }
 
   // Determine approval stage text dynamically
   const getApprovalButtonText = () => {
@@ -179,13 +204,22 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
         (lpo.firstApproverId == null ||
           lpo.secondApproverId == null ||
           lpo.finalApproverId == null) && (
-          <button
-            onClick={handleApprove}
-            disabled={isApproving}
-            className="mt-4 w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 disabled:opacity-50"
-          >
-            {isApproving ? "Approving..." : approvalButtonText}
-          </button>
+          <div className="flex justify-between space-x-4">
+            <button
+              onClick={handleReject}
+              disabled={isApproving}
+              className="mt-4 w-full px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors duration-200 disabled:opacity-50"
+            >
+              {isRejecting ? "Rejecting..." : "Reject LPO"}
+            </button>
+            <button
+              onClick={handleApprove}
+              disabled={isApproving}
+              className="mt-4 w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 disabled:opacity-50"
+            >
+              {isApproving ? "Approving..." : approvalButtonText}
+            </button>
+          </div>
         )}
     </div>
   );

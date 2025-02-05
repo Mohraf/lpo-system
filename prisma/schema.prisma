@@ -14,6 +14,11 @@ enum UserRole {
   ADMIN
 }
 
+enum LpoRejected {
+  NO
+  YES
+}
+
 model Company {
   id      Int      @id @default(autoincrement())
   name    String
@@ -70,6 +75,7 @@ model Lpo {
   supplier         Supplier      @relation(fields: [supplierId], references: [id])
   supplierId       Int
   remarks          String        @default("")
+  rejected         LpoRejected   @default(NO)
 }
 
 model Supplier {
