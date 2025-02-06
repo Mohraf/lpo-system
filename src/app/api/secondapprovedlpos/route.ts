@@ -9,6 +9,7 @@ export async function GET(req: Request) {
     try {
         if (session.user.role === "ADMIN" || session.user.role === "APPROVER") {
             const lpos = await prisma.lpo.findMany({
+                where: { finalApproverId: null, secondApproverId: { not: null }, firstApproverId:  { not: null }, rejected: "NO" },
                 include: {
                     site: true, // Include site data
                     supplier: true,

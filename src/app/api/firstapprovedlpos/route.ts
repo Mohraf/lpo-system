@@ -5,30 +5,30 @@ import { prisma } from "@/lib/prisma";
 export async function GET(req: Request) {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  
+
     try {
-      if (session.user.role === "ADMIN" || session.user.role === "APPROVER") {
-        const lpos = await prisma.lpo.findMany({
-          include : {
-            site: true, // Include site data
-            supplier: true,
-          }
-        });
-        return NextResponse.json(lpos);
-      } else {
-        // fetching LPOs based on the logged-in user
-        const lpos = await prisma.lpo.findMany({
-          where: { createdById: parseInt(session.user.id), finalApproverId: null, secondApproverId: null, firstApproverId: { not: null },  rejected: "NO"}, // Fetching LPOs created by the logged-in user
-          include: {
-            site: true, // Include site data
-            supplier: true, // Include supplier data
-          },
-        });
-        return NextResponse.json(lpos);
-      }
-  
+        if (session.user.role === "ADMIN" || session.user.role === "APPROVER") {
+            const lpos = await prisma.lpo.findMany({
+                where: { finalApproverId: null, secondApproverId: null, firstApproverId: { not: null }, rejected: "NO" },
+                include: {
+                    site: true, // Include site data
+                    supplier: true,
+                }
+            });
+            return NextResponse.json(lpos);
+        } else {
+            // fetching LPOs based on the logged-in user
+            const lpos = await prisma.lpo.findMany({
+                where: { createdById: parseInt(session.user.id), finalApproverId: null, secondApproverId: null, firstApproverId: { not: null }, rejected: "NO" }, // Fetching LPOs created by the logged-in user
+                include: {
+                    site: true, // Include site data
+                    supplier: true, // Include supplier data
+                },
+            });
+            return NextResponse.json(lpos);
+        }
+
     } catch (error) {
-      return NextResponse.json({ error: "Failed to fetch LPOs" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to fetch LPOs" }, { status: 500 });
     }
-  }
-  
+}
