@@ -10,7 +10,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
             { status: 401 }
         );
 
-        const lpoId = parseInt(params.id);
+        const { id } = await params;
+        const lpoId = parseInt(id);
         const rawData = await req.json();
         
         // Validate required fields
