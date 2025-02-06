@@ -27,7 +27,7 @@ export default function Sidebar() {
       
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 bg-gray-900 text-white w-64 p-5 transform transition-transform duration-300 md:relative md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 bg-[#004aad] text-white w-64 p-5 transform transition-transform duration-300 md:relative md:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:flex md:flex-col`}
       >
@@ -38,7 +38,7 @@ export default function Sidebar() {
               <li key={item.href} className="mb-4">
                 <Link
                   href={item.href}
-                  className="block px-4 py-2 rounded hover:bg-gray-700"
+                  className="block px-4 py-2 rounded hover:bg-[#0003ad]"
                 >
                   {item.name}
                 </Link>
