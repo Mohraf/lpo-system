@@ -20,7 +20,7 @@ const page = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/lpos").then((res) => res.json()).then(setLpos),
+      fetch("/api/firstapprovedlpos").then((res) => res.json()).then(setLpos),
       fetch("/api/sites").then((res) => res.json()).then(setSites),
       fetch("/api/suppliers").then((res) => res.json()).then(setSuppliers),
     ])
