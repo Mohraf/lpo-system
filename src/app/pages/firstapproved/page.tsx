@@ -1,12 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { LpoForm } from "@/components/LpoPostingForm/LpoForm";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import LpoDetails from "@/components/Lpo/LpoDetails";
 import Header from "@/components/Header/Header";
 import { SupplyItem, Lpo, Site, Supplier } from "@/types/models";
