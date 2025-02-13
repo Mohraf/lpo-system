@@ -38,7 +38,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     if (session.user.role === "ADMIN") {
       // Admin should approve all missing levels at once
-      updateData.firstApproverId = lpo.firstApproverId || parseInt(session.user.id),
+      updateData.firstApproverId = lpo.firstApproverId || parseInt(session.user.id);
       updateData.secondApproverId = lpo.secondApproverId || parseInt(session.user.id);
       updateData.finalApproverId = lpo.finalApproverId || parseInt(session.user.id);
     } else {
@@ -63,9 +63,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     return NextResponse.json({ message: "LPO approved successfully", lpo: updatedLpo });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { error: "Operation failed", message: error.message },
+      { error: "Operation failed", message: (error as Error).message },
       { status: 500 }
     );
   }

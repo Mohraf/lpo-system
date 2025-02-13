@@ -28,8 +28,8 @@ export async function GET() {
             return NextResponse.json(lpos);
         }
 
-    } catch (error: any) {
-        console.error(error)
+    } catch (error: unknown) {
+        // console.error(error)
         return NextResponse.json({ error: "Failed to fetch LPOs" }, { status: 500 });
     }
 }

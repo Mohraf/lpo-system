@@ -59,10 +59,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     return NextResponse.json({ message: "LPO rejection successfull", lpo: updatedLpo });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Database error:", error);
     return NextResponse.json(
-      { error: "Operation failed", message: error.message },
+      { error: "Operation failed", message: (error as Error).message },
       { status: 500 }
     );
   }

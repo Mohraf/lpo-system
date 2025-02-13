@@ -15,8 +15,8 @@ export async function POST(req: Request) {
             },
         });
         return NextResponse.json(company);
-    } catch (error: any) {
-        console.error(error)
+    } catch (error: unknown) {
+        // console.error(error)
         return NextResponse.json({ error: "Failed to create Company" }, { status: 500 });
     }
 }
@@ -30,8 +30,8 @@ export async function GET() {
         const companies = await prisma.company.findMany();
 
         return NextResponse.json(companies);
-    } catch (error: any) {
-        console.error(error)
+    } catch (error: unknown) {
+        // console.error(error)
         return NextResponse.json({ error: "Failed to fetch Companies" }, { status: 500 });
     }
 }

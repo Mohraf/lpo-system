@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { SupplyItem } from "@/types/models";
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
     try {
@@ -30,7 +31,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
         // Calculate financial values
         const subTotal = rawData.supplyItems.reduce(
-            (acc: number, item: any) => acc + (item.quantity * item.unitPrice),
+            (acc: number, item: SupplyItem) => acc + (item.quantity * item.unitPrice),
             0
         );
         
@@ -52,7 +53,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
                 createdById: parseInt(session.user.id),
                 supplyItems: {
                     deleteMany: {}, // Delete existing supply items
-                    create: rawData.supplyItems.map((item: any) => ({
+                    create: rawData.supplyItems.map((item: SupplyItem) => ({
                         name: item.name,
                         quantity: Number(item.quantity),
                         unit: item.unit,
@@ -66,14 +67,13 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
         return NextResponse.json(lpo);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Database error:", error);
 
         // Create a safe error response
         const errorResponse = {
             error: "Operation failed",
-            message: error?.message || "An unknown error occurred", // Fallback to a default message
-            details: error?.meta || null // Use null if details are not available
+            message: (error as Error).message || "An unknown error occurred", // Fallback to a default message
         };
 
         return NextResponse.json(errorResponse, { status: 500 });
