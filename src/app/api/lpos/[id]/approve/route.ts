@@ -8,7 +8,7 @@ interface ApproveData {
   finalApproverId: number;
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string | string[] } }) {
+export async function POST(req: NextRequest, { params }: { params: Record<string, string> }) {
   try {
     // Authenticate user
     const session = await auth();
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     const lpoId = Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id);
-    
+
     if (isNaN(lpoId)) {
       return NextResponse.json({ error: "Invalid LPO ID" }, { status: 400 });
     }
