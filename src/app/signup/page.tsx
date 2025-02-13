@@ -73,7 +73,7 @@ export default function SignupPage() {
           lastName: data.lastName,
           email: data.email,
           password: data.password,
-          role: data.role, // ✅ Ensure role is sent
+          role: data.role,
         }),
       });
 
