@@ -8,7 +8,12 @@ interface ApproveData {
   finalApproverId: number;
 }
 
-export async function POST(req: NextRequest, { params }: { params: Record<string, string> }) {
+// Define a type for the params
+interface Params {
+  id: string; // Expecting id to be a string
+}
+
+export async function POST(req: NextRequest, { params }: { params: Params }) {
   try {
     // Authenticate user
     const session = await auth();
