@@ -15,13 +15,14 @@ export async function POST(req: Request) {
             },
         });
         return NextResponse.json(supplier);
-    } catch (error) {
+    } catch (error: unknown) {
+        console.error(error)
         return NextResponse.json({ error: "Failed to create Supplier" }, { status: 500 });
     }
 }
 
 
-export async function GET(req: Request) {
+export async function GET() {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -29,7 +30,8 @@ export async function GET(req: Request) {
         const suppliers = await prisma.supplier.findMany();
 
         return NextResponse.json(suppliers);
-    } catch (error) {
+    } catch (error: unknown) {
+        console.error(error)
         return NextResponse.json({ error: "Failed to fetch Suppliers" }, { status: 500 });
     }
 }

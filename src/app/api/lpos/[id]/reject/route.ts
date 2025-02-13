@@ -24,7 +24,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: "LPO not found" }, { status: 404 });
     }
 
-    let updateData: any = {};
+    const updateData: { rejected: string } = { rejected: "" };
 
     // if (session.user.role === "ADMIN") {
     //   // Admin should approve all missing levels at once
@@ -50,7 +50,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     // Update LPO record
     const updatedLpo = await prisma.lpo.update({
       where: { id: lpoId },
-      data: updateData,
+      data: {
+        rejected: {
+          set: "YES"
+        }
+      },
     });
 
     return NextResponse.json({ message: "LPO rejection successfull", lpo: updatedLpo });

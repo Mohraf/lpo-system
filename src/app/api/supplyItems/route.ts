@@ -17,7 +17,8 @@ export async function GET(req: NextRequest) {
             return console.error("Please pass LpoID")
         }
 
-    } catch (error) {
+    } catch (error: unknown) {
+        console.error(error)
         return NextResponse.json({ error: "Failed to fetch LPOs" }, { status: 500 });
     }
 }

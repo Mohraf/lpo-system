@@ -3,6 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { Site, Supplier } from "@/types/models";
 
 // Define the schema
 const supplyItemSchema = z.object({
@@ -35,8 +36,8 @@ export function LpoForm({
   sites,
   suppliers,
 }: {
-  sites: any[];
-  suppliers: any[];
+  sites: Site[];
+  suppliers: Supplier[];
 }) {
   const {
     register,

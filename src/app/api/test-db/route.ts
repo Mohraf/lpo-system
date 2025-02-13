@@ -9,10 +9,10 @@ export async function GET() {
       userCount: users.length,
       users
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json({
       dbConnection: "failed",
-      error: error.message
+      error: (error as Error).message
     }, { status: 500 });
   }
 }

@@ -14,6 +14,9 @@ export type Lpo = {
     subTotal: number;
     vatRate: number;
     total: number;
+    paymentTerms: string;
+    deliveryTerms: string;
+    remarks: string;
     createdAt: string;
     firstApproverId: number;
     secondApproverId: number;
@@ -24,6 +27,11 @@ export type Lpo = {
 }
 
 export type Site = {
+    id: number;
+    name: string;
+}
+
+export type Company = {
     id: number;
     name: string;
 }

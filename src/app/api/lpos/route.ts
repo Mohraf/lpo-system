@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+import { SupplyItem } from "@/types/models";
 
 export async function POST(req: Request) {
   try {
@@ -28,7 +30,7 @@ export async function POST(req: Request) {
 
     // Calculate financial values
     const subTotal = rawData.supplyItems.reduce(
-      (acc: number, item: any) => acc + (item.quantity * item.unitPrice),
+      (acc: number, item: SupplyItem) => acc + (item.quantity * item.unitPrice),
       0
     );
     
@@ -48,7 +50,7 @@ export async function POST(req: Request) {
         total,
         createdById: parseInt(session.user.id),
         supplyItems: {
-          create: rawData.supplyItems.map((item: any) => ({
+          create: rawData.supplyItems.map((item: SupplyItem) => ({
             name: item.name,
             quantity: Number(item.quantity),
             unit: item.unit,
@@ -62,13 +64,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json(lpo);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Database error:", error);
     return NextResponse.json(
       { 
         error: "Operation failed",
-        message: error.message,
-        details: error.meta // Prisma error details
+        message: (error as Error).message,
+        details: (error as Prisma.PrismaClientKnownRequestError).meta // Prisma error details
       },
       { status: 500 }
     );
@@ -76,7 +78,7 @@ export async function POST(req: Request) {
 }
 
 // Add similar routes for GET, PUT, DELETE
-export async function GET(req: Request) {
+export async function GET() {
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -101,7 +103,8 @@ export async function GET(req: Request) {
       return NextResponse.json(lpos);
     }
 
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error(error)
     return NextResponse.json({ error: "Failed to fetch LPOs" }, { status: 500 });
   }
 }

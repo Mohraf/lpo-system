@@ -15,13 +15,14 @@ export async function POST(req: Request) {
             },
         });
         return NextResponse.json(company);
-    } catch (error) {
+    } catch (error: any) {
+        console.error(error)
         return NextResponse.json({ error: "Failed to create Company" }, { status: 500 });
     }
 }
 
 
-export async function GET(req: Request) {
+export async function GET() {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -29,7 +30,8 @@ export async function GET(req: Request) {
         const companies = await prisma.company.findMany();
 
         return NextResponse.json(companies);
-    } catch (error) {
+    } catch (error: any) {
+        console.error(error)
         return NextResponse.json({ error: "Failed to fetch Companies" }, { status: 500 });
     }
 }

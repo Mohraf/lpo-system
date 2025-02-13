@@ -45,10 +45,12 @@ const roles: Role[] = [
   }
 ]
 
+type SignUpFormValues = z.infer<typeof signupSchema>;
+
 export default function SignupPage() {
   const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       firstName: "",
@@ -82,8 +84,8 @@ export default function SignupPage() {
       }
 
       router.push("/login?success=Registration+successful");
-    } catch (error: any) {
-      setServerError(error.message || "Registration failed");
+    } catch (error: unknown) {
+      setServerError((error as Error).message || "Registration failed");
     }
   };
 

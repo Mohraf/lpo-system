@@ -2,6 +2,12 @@ import { NextResponse, NextRequest } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
+interface ApproveData {
+  firstApproverId: number;
+  secondApproverId: number;
+  finalApproverId: number;
+}
+
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Authenticate user
@@ -24,11 +30,15 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: "LPO not found" }, { status: 404 });
     }
 
-    let updateData: any = {};
+    const updateData: ApproveData = {
+      firstApproverId: lpo.firstApproverId || parseInt(session.user.id),
+      secondApproverId: lpo.secondApproverId || parseInt(session.user.id),
+      finalApproverId: lpo.finalApproverId || parseInt(session.user.id),
+    };
 
     if (session.user.role === "ADMIN") {
       // Admin should approve all missing levels at once
-      updateData.firstApproverId = lpo.firstApproverId || parseInt(session.user.id);
+      updateData.firstApproverId = lpo.firstApproverId || parseInt(session.user.id),
       updateData.secondApproverId = lpo.secondApproverId || parseInt(session.user.id);
       updateData.finalApproverId = lpo.finalApproverId || parseInt(session.user.id);
     } else {
@@ -54,7 +64,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ message: "LPO approved successfully", lpo: updatedLpo });
 
   } catch (error: any) {
-    console.error("Database error:", error);
     return NextResponse.json(
       { error: "Operation failed", message: error.message },
       { status: 500 }

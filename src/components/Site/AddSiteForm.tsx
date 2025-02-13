@@ -2,6 +2,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Company } from "@/types/models";
 
 const siteSchema = z.object({
   name: z.string().min(1, "Site name is required"),
@@ -10,7 +11,7 @@ const siteSchema = z.object({
 
 type SiteFormValues = z.infer<typeof siteSchema>;
 
-const AddSiteForm = ({ companies }: { companies: any[] }) => {
+const AddSiteForm = ({ companies }: { companies: Company[] }) => {
   const {
     register,
     handleSubmit,

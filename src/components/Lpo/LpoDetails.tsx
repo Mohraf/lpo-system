@@ -10,46 +10,14 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { EditLpoForm } from "../LpoPostingForm/EditLpoForm";
+import { Lpo, Site, Supplier, SupplyItem } from "@/types/models";
 
-interface SupplyItem {
-  id: number;
-  name: string;
-  quantity: number;
-  unitPrice: number;
-  unit: string; // Ensure unit is included
-}
-
-interface Lpo {
-  id: number;
-  lpoNumber: string;
-  prNumber: string;
-  supplier: { id: number; name: string };
-  subTotal: number;
-  vatRate: number;
-  total: number;
-  createdAt: string;
-  firstApproverId: number;
-  secondApproverId: number;
-  finalApproverId: number;
-  rejected: string;
-  site: { id: number; name: string };
-  supplyItems: SupplyItem[]; // Added supplyItems to the interface
-}
 
 interface LpoDetailsProps {
   lpo: Lpo;
   onClose: () => void;
 }
 
-interface Site {
-  id: number;
-  name: string;
-}
-
-interface Supplier {
-  id: number;
-  name: string;
-}
 
 const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
   const { data: session } = useSession();
@@ -60,7 +28,7 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
   const { toast } = useToast();
   const [sites, setSites] = useState<Site[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const userHasApprovalRights =
@@ -81,6 +49,8 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
   }, [lpo]);
 
   useEffect(() => {
+    setLoading(true)
+    setIsEditing(true)
     Promise.all([
       fetch("/api/sites")
         .then((res) => res.json())
@@ -90,8 +60,8 @@ const LpoDetails: React.FC<LpoDetailsProps> = ({ lpo, onClose }) => {
         .then(setSuppliers),
     ])
       .catch((err) => console.error("Failed to fetch data", err))
-      .finally(() => setLoading(false));
-  }, [isEditing]);
+      .finally(() => {setLoading(false); setIsEditing(false)});
+  }, [isEditing, loading]);
 
   const handleApprove = async () => {
     setIsApproving(true);
