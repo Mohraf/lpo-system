@@ -5,8 +5,11 @@ import { compare } from "bcryptjs";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { getServerSession } from "next-auth";
 
+// Create a separate adapter instance
+const adapter = PrismaAdapter(prisma);
+
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter,
   providers: [
     Credentials({
       name: "Credentials",

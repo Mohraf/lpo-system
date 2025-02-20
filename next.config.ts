@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   reactStrictMode: true,
-  serverExternalPackages: ["bcryptjs", "jose"], // Updated key
+  serverExternalPackages: ["bcryptjs", "jose", "@prisma/client"], // Updated key
   experimental: {
     middlewarePrefetch: "flexible",
   },
