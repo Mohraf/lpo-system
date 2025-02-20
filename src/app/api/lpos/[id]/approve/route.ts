@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -8,12 +8,7 @@ interface ApproveData {
   finalApproverId: number;
 }
 
-// Define a type for the params
-interface Params {
-  id: string; // Expecting id to be a string
-}
-
-export async function POST(req: NextRequest, { params }: { params: Params }) {
+export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
     // Authenticate user
     const session = await auth();
@@ -21,7 +16,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const lpoId = Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id);
+    const { id } = await params;
+    const lpoId = parseInt(id);
 
     if (isNaN(lpoId)) {
       return NextResponse.json({ error: "Invalid LPO ID" }, { status: 400 });
@@ -44,7 +40,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
     if (session.user.role === "ADMIN") {
       // Admin should approve all missing levels at once
-      updateData.firstApproverId = lpo.firstApproverId || parseInt(session.user.id);
+      updateData.firstApproverId = lpo.firstApproverId || parseInt(session.user.id),
       updateData.secondApproverId = lpo.secondApproverId || parseInt(session.user.id);
       updateData.finalApproverId = lpo.finalApproverId || parseInt(session.user.id);
     } else {
@@ -69,9 +65,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
     return NextResponse.json({ message: "LPO approved successfully", lpo: updatedLpo });
 
-  } catch (error: unknown) {
+  } catch (error: any) {
     return NextResponse.json(
-      { error: "Operation failed", message: (error as Error).message },
+      { error: "Operation failed", message: error.message },
       { status: 500 }
     );
   }

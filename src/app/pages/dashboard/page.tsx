@@ -42,49 +42,57 @@ export default function Dashboard() {
       <div className="container mx-auto h-screen">
         <Header />
 
-        <div className="p-4">
-          <h1 className="text-2xl font-bold">Companies</h1>
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                New Company
-              </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogTitle>New Company Posting</DialogTitle>
-              <CompanyForm />
-            </DialogContent>
-          </Dialog>
-        </div>
+        <div className="flex h-[calc(100vh-58px)]">
+          <div className="w-2/3 p-6">
+            <h2>Dashboard</h2>
+          </div>
 
-        <div className="p-4">
-          <h1 className="text-2xl font-bold">Sites</h1>
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                New Site
-              </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogTitle>New Company Site Posting</DialogTitle>
-              <AddSiteForm companies={companies} />
-            </DialogContent>
-          </Dialog>
-        </div>
+          <div className="w-1/3 border-l-2">
+            <div className="p-4 shadow-md rounded-lg bg-gray-200 m-2 flex text-center items-center justify-between">
+              <h3 className="text-lg font-bold">Register a new company</h3>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="bg-gray-500 text-base text-white px-4 py-2 rounded-full hover:bg-gray-400">
+                    New Company
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogTitle>New Company Posting</DialogTitle>
+                  <CompanyForm />
+                </DialogContent>
+              </Dialog>
+            </div>
 
-        <div className="p-4">
-          <h1 className="text-2xl font-bold">Suppliers</h1>
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                New Supplier
-              </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogTitle>New Supplier Posting</DialogTitle>
-              <AddSupplierForm />
-            </DialogContent>
-          </Dialog>
+            <div className="p-4 shadow-md rounded-lg bg-gray-200 m-2 flex text-center items-center justify-between">
+              <h3 className="text-lg font-bold">Register a new site</h3>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="bg-gray-500 text-base text-white px-4 py-2 rounded-full hover:bg-gray-400">
+                    New Site
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogTitle>New Company Site Posting</DialogTitle>
+                  <AddSiteForm companies={companies} />
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="p-4 shadow-md rounded-lg bg-gray-200 m-2 flex text-center items-center justify-between">
+              <h3 className="text-lg font-bold">Register a new supplier</h3>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="bg-gray-500 text-base text-white px-4 py-2 rounded-full hover:bg-gray-400">
+                    New Supplier
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogTitle>New Supplier Posting</DialogTitle>
+                  <AddSupplierForm />
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
         </div>
       </div>
     </ClientSession>
