@@ -8,7 +8,7 @@ interface ApproveData {
   finalApproverId: number;
 }
 
-export async function POST({ params }: { params: { id: string } }) {
+export async function POST(req: Request, context: { params: { id: string } }) {
   try {
     // Authenticate user
     const session = await auth();
@@ -16,7 +16,7 @@ export async function POST({ params }: { params: { id: string } }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { id } = context.params;
     const lpoId = parseInt(id);
 
     if (isNaN(lpoId)) {

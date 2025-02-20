@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { SupplyItem } from "@/types/models";
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, context: { params: { id: string } }) {
     try {
         const session = await auth();
         if (!session?.user?.id) return NextResponse.json(
@@ -11,7 +11,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
             { status: 401 }
         );
 
-        const { id } = await params;
+        const { id } = context.params;
         const lpoId = parseInt(id);
         const rawData = await req.json();
         
