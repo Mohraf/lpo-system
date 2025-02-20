@@ -8,7 +8,7 @@ interface ApproveData {
   finalApproverId: number;
 }
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST({ params }: { params: { id: string } }) {
   try {
     // Authenticate user
     const session = await auth();
