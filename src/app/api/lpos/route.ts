@@ -66,14 +66,7 @@ export async function POST(req: Request) {
 
   } catch (error: unknown) {
     console.error("Database error:", error);
-    return NextResponse.json(
-      { 
-        error: "Operation failed",
-        message: (error as Error).message,
-        details: (error as Prisma.PrismaClientKnownRequestError).meta // Prisma error details
-      },
-      { status: 500 }
-    );
+    // return NextResponse.json();
   }
 }
 
