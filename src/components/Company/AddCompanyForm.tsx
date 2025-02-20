@@ -2,6 +2,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useToast } from "@/hooks/use-toast";
 
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
@@ -21,6 +22,8 @@ export function CompanyForm() {
     },
   });
 
+  const { toast } = useToast()
+
   const onSubmit = async (data: CompanyFormValues) => {
     try {
       const response = await fetch("/api/companies", {
@@ -31,11 +34,25 @@ export function CompanyForm() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error("Failed to create Company");
+      if (!response.ok) toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Error occured! Failed to create company"
+      });
 
-      console.log("company created");
+      // console.log("company created");
+      toast({
+        title: "Success",
+        description: "Company created"
+      })
+      window.location.reload();
     } catch (error) {
-      console.error("Submission error:", error);
+      // console.error("Submission error:", error);
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: error instanceof Error ? error.message : "Unknown error"
+      })
     }
   };
 

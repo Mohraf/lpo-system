@@ -2,6 +2,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useToast } from "@/hooks/use-toast";
 
 const supplierSchema = z.object({
   name: z.string().min(1, "Supplier name is required"),
@@ -21,6 +22,8 @@ const AddSupplierForm = () => {
     },
   });
 
+  const { toast } = useToast()
+
   const onSubmit = async (data: SupplierFormValues) => {
     try {
       const response = await fetch("/api/suppliers", {
@@ -31,11 +34,25 @@ const AddSupplierForm = () => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error("Failed to create Supplier");
+      if (!response.ok) toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Error occured! Failed to add supplier"
+      });
 
       // Handle success
+      toast({
+        title: "Success",
+        description: "Company created"
+      })
+      window.location.reload();
     } catch (error) {
-      console.error("Submission error:", error);
+      // console.error("Submission error:", error);
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: error instanceof Error ? error.message : "Unknown error"
+      })
     }
   };
 

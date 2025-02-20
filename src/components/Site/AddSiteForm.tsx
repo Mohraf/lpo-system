@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Company } from "@/types/models";
+import { useToast } from "@/hooks/use-toast";
 
 const siteSchema = z.object({
   name: z.string().min(1, "Site name is required"),
@@ -24,6 +25,8 @@ const AddSiteForm = ({ companies }: { companies: Company[] }) => {
     },
   });
 
+  const { toast } = useToast()
+
   const onSubmit = async (data: SiteFormValues) => {
     try {
       const response = await fetch("/api/sites", {
@@ -34,11 +37,25 @@ const AddSiteForm = ({ companies }: { companies: Company[] }) => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error("Failed to create Site");
+      if (!response.ok) toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Error occured! Failed to add company site"
+      });
 
-      console.log("Site created");
+      // console.log("Site created");
+      toast({
+        title: "Success",
+        description: "Company site created"
+      })
+      window.location.reload();
     } catch (error) {
-      console.error("Submission error:", error);
+      // console.error("Submission error:", error);
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: error instanceof Error ? error.message : "Unknown error"
+      })
     }
   };
 
