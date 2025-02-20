@@ -9,42 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import LpoDetails from "@/components/Lpo/LpoDetails";
 import Header from "@/components/Header/Header";
-
-
-interface SupplyItem {
-  id: number;
-  name: string;
-  quantity: number;
-  unitPrice: number;
-  unit: string; // Ensure unit is included
-}
-
-interface Lpo {
-  id: number;
-  lpoNumber: string;
-  prNumber: string;
-  supplier: { id: number; name: string };
-  subTotal: number;
-  vatRate: number;
-  total: number;
-  createdAt: string;
-  firstApproverId: number;
-  secondApproverId: number;
-  finalApproverId: number;
-  rejected: string;
-  site: { id: number; name: string };
-  supplyItems: SupplyItem[];
-}
-
-interface Site {
-  id: number;
-  name: string;
-}
-
-interface Supplier {
-  id: number;
-  name: string;
-}
+import { Lpo, Site, Supplier } from "@/types/models";
 
 export default function PostedLposPage() {
   const [lpos, setLpos] = useState<Lpo[]>([]);
@@ -161,9 +126,11 @@ export default function PostedLposPage() {
             </tbody>
           </table>
         </div>
-
         {selectedLpo && (
-          <LpoDetails lpo={selectedLpo} onClose={() => setSelectedLpo(null)} />
+          <LpoDetails 
+            lpo={selectedLpo} 
+            onClose={() => setSelectedLpo(null)} 
+          />
         )}
       </div>
     </div>
