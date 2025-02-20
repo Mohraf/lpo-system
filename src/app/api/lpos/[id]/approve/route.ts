@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import type { NextRequest } from 'next/server';
 
 interface ApproveData {
   firstApproverId: number;
@@ -8,16 +9,18 @@ interface ApproveData {
   finalApproverId: number;
 }
 
-export async function POST(req: Request, context: { params: { id: string } }) {
+export async function POST(req: NextRequest) {
   try {
+    console.log("Incoming request:", req);
+
     // Authenticate user
     const session = await auth();
     if (!session || !(session.user.role === "APPROVER" || session.user.role === "ADMIN")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = context.params;
-    const lpoId = parseInt(id);
+    const lpoId = parseInt(req.nextUrl.pathname.split('/')[3]);
+    console.log("Parsed LPO ID:", lpoId);
 
     if (isNaN(lpoId)) {
       return NextResponse.json({ error: "Invalid LPO ID" }, { status: 400 });
@@ -66,6 +69,7 @@ export async function POST(req: Request, context: { params: { id: string } }) {
     return NextResponse.json({ message: "LPO approved successfully", lpo: updatedLpo });
 
   } catch (error: any) {
+    console.error("Error occurred:", error);
     return NextResponse.json(
       { error: "Operation failed", message: error.message },
       { status: 500 }

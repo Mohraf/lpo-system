@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(req: NextRequest, context: { params: { id: string } }) {
+export async function POST(req: NextRequest) {
   try {
     // Authenticate user
     const session = await auth();
@@ -10,7 +10,8 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const lpoId = parseInt(context.params.id);
+    const lpoId = parseInt(req.nextUrl.pathname.split('/')[3]);
+
     if (isNaN(lpoId)) {
       return NextResponse.json({ error: "Invalid LPO ID" }, { status: 400 });
     }
