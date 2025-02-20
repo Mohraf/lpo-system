@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams();
 
   const [params, setParams] = useState<{
@@ -19,7 +20,7 @@ export default function LoginPage() {
     const callbackUrl = searchParams.get("callbackUrl") || "/pages/dashboard";
 
     setParams({ error, success, callbackUrl });
-  }, []);
+  }, [searchParams]); // Ensure dependency array includes searchParams
 
   return (
     <div className="min-h-screen p-4 flex flex-col md:space-x-4 md:flex-row items-center justify-center bg-gray-100">
@@ -53,7 +54,7 @@ export default function LoginPage() {
               signIn("credentials", {
                 email: formData.get("email"),
                 password: formData.get("password"),
-                callbackUrl: params.callbackUrl, // Use dynamic callback URL
+                callbackUrl: params.callbackUrl,
               });
             }}
             className="space-y-4"
@@ -90,5 +91,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
